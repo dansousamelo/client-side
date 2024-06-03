@@ -202,7 +202,10 @@ export function Signup() {
           </S.ForwardButtonWrapper>
         </S.SignupForm>
       </Page.Content>
-      <Page.Image alt="Doctor" src="src/pages/HomePage/assets/signup.png" />
+      <Page.Image
+        alt="Doctor"
+        src="https://github.com/EPS-DataMed/client-side/blob/r1/src/pages/HomePage/assets/signup.png?raw=true"
+      />
     </Page.Background>
   )
 }
