@@ -6,23 +6,23 @@ import { Pen } from '../../assets/icons/pen'
 import { Logout } from '../../assets/icons/logout'
 import * as S from './styles'
 import useNavigation from '../../hooks/useNavigation'
-import { useUserContext } from '../../contexts/UserContext'
+import { useState } from 'react'
 
 export function HomePage() {
-  const { getUser } = useUserContext()
-  const user = getUser()
-
   const navigateTo = useNavigation()
 
   const handleNavigationToSubmission = () => {
     navigateTo('/submission')
   }
 
-  const firstName = user.name.split(' ')[0]
-  const greeting = user.sex === 'Masculino' ? 'Bem vindo' : 'Bem vinda '
-  const title = user.crm ? 'Dr. ' : ''
-  const welcomeMessageText = `${greeting}, ${title} ${firstName}!`
-  const firstLetter = user.name[0]
+  // const firstName = user.name.split(' ')[0]
+  // const greeting = user.sex === 'Masculino' ? 'Bem vindo' : 'Bem vinda '
+  // const title = user.crm ? 'Dr. ' : ''
+  // const welcomeMessageText = `${greeting}, ${title} ${firstName}!`
+  // const firstLetter = user.name[0]
+  const [imageManagerTestLoaded, setImageManagerTestLoaded] = useState(false)
+  const [imageManagerPatientLoaded, setImageManagerPatientLoaded] =
+    useState(false)
 
   return (
     <>
@@ -35,7 +35,7 @@ export function HomePage() {
 
           <ButtonsAndProfile>
             <ProfileCircle>
-              <p>{firstLetter}</p>
+              <p>D</p>
             </ProfileCircle>
             <PrimaryButton>
               <Pen />
@@ -50,7 +50,7 @@ export function HomePage() {
 
         <GenericPage.Divider />
         <S.MainContent>
-          <S.WelcomeText>{welcomeMessageText}</S.WelcomeText>
+          <S.WelcomeText>Bem vindo! </S.WelcomeText>
           <S.WelcomeQuestion>O que deseja acessar hoje?</S.WelcomeQuestion>
 
           <S.Options>
@@ -60,7 +60,12 @@ export function HomePage() {
                 Envie seus exames e extraia seus dados de saúde.
               </S.OptionDescription>
               <S.ImageWrapper>
-                <S.Image src="https://github.com/EPS-DataMed/client-side/blob/r1/src/pages/HomePage/assets/BlueCircleAndDoctor.png?raw=true" />
+                {!imageManagerTestLoaded && <S.SkeletonImage />}
+                <S.Image
+                  src="https://github.com/EPS-DataMed/client-side/blob/r1/src/pages/HomePage/assets/BlueCircleAndDoctor.png?raw=true"
+                  onLoad={() => setImageManagerTestLoaded(true)}
+                  style={{ display: imageManagerTestLoaded ? 'block' : 'none' }}
+                />
               </S.ImageWrapper>
             </S.HomepageOption>
 
@@ -70,7 +75,14 @@ export function HomePage() {
                 Adicione e gerencie os exames do seu paciente.
               </S.OptionDescription>
               <S.ImageWrapper>
-                <S.Image src="https://github.com/EPS-DataMed/client-side/blob/r1/src/pages/HomePage/assets/BlueCircleAndExam.png?raw=true" />
+                {!imageManagerPatientLoaded && <S.SkeletonImage />}
+                <S.Image
+                  src="https://github.com/EPS-DataMed/client-side/blob/r1/src/pages/HomePage/assets/BlueCircleAndExam.png?raw=true"
+                  onLoad={() => setImageManagerPatientLoaded(true)}
+                  style={{
+                    display: imageManagerPatientLoaded ? 'block' : 'none',
+                  }}
+                />
               </S.ImageWrapper>
             </S.HomepageOption>
           </S.Options>

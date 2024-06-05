@@ -1,3 +1,4 @@
+// pages/Login/Login.tsx
 import { useState } from 'react'
 import * as Page from '../../components/GenericSignupLoginPage'
 import * as S from './styles'
@@ -5,25 +6,19 @@ import { LargeLogo } from '../../assets/largeLogo'
 import { PrimaryButton } from '../../components/PrimaryButton'
 import TypingEffect from '../../components/TypingEffect'
 import { ArrowRight } from '../../assets/icons'
-import useNavigation from '../../hooks/useNavigation'
-import { useUserContext } from '../../contexts/UserContext'
 import InputField from '../../components/Input/InputField'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { ErrorToast } from '../../components/Toast'
-
-const loginSchema = z.object({
-  email: z.string().email('E-mail inválido'),
-  password: z.string().min(6, 'A senha é obrigatória'),
-})
-
-type LoginFormData = z.infer<typeof loginSchema>
+import { Skeleton } from '../../components/Skeleton'
+import { LoginFormData, loginSchema } from './schema'
+import { useLogin } from './hooks/useLogin'
+import useNavigation from '../../hooks/useNavigation'
 
 export function Login() {
-  const { getUser } = useUserContext()
-  const navigateTo = useNavigation()
-  const [loading, setLoading] = useState(false)
+  const navigatoTo = useNavigation()
+
+  const { loading, onSubmit } = useLogin()
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   const { control, handleSubmit } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -33,28 +28,14 @@ export function Login() {
     },
   })
 
-  const onSubmit: SubmitHandler<LoginFormData> = (data) => {
-    const storedUser = getUser()
-    if (
-      data.email === storedUser.email &&
-      data.password === storedUser.password
-    ) {
-      setLoading(true)
-      console.log('User:', data)
-      setTimeout(() => {
-        setLoading(false)
-        navigateTo('/home', { replace: true })
-      }, 2000)
-    } else {
-      ErrorToast('E-mail ou senha inválida.')
-    }
-  }
-
   return (
     <Page.Background>
+      {!imageLoaded && <Skeleton style={{ width: '50vw', height: '100%' }} />}
       <Page.Image
         alt="Doctor"
         src="https://github.com/EPS-DataMed/client-side/blob/r1/src/pages/HomePage/assets/login.png?raw=true"
+        onLoad={() => setImageLoaded(true)}
+        style={{ display: imageLoaded ? 'block' : 'none' }}
       />
       <Page.Content>
         <Page.WrapperLogoAndText>
@@ -98,7 +79,7 @@ export function Login() {
             Não possui uma conta?{' '}
             <S.Link
               onClick={() => {
-                navigateTo('/signup')
+                navigatoTo('/signup')
               }}
             >
               Cadastre-se
